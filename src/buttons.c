@@ -12,6 +12,13 @@ uint8_t readButton(uint8_t button) {
     switch(button) {
         case 1: return READ(B1_IN, B1);
         case 2: return READ(B2_IN, B2);
+        case 3: return READ(B3_IN, B3);
+        case 4: return READ(B4_IN, B4);
+        case 5: return READ(B5_IN, B5);
+        case 6: return READ(B6_IN, B6);
+        case 7: return READ(B7_IN, B7);
+        case 8: return READ(B8_IN, B8);
+        case 9: return READ(B9_IN, B9);
         default: return 0;
     }
 }
@@ -71,7 +78,7 @@ void waitForButtonUp(uint8_t buttonDown) {
     uint8_t pressed;
 
     // if the button is 0, then return 0 because it probably won't change
-    if(buttonDown == 0) return 0;
+    if(buttonDown == 0) return;
 
     // now wait for the button to change state
     while(count <= 4) {
