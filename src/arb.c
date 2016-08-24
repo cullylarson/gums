@@ -15,7 +15,7 @@ void setupArb() {
 }
 
 void delayMsish(uint16_t msish) {
-    delayArb((uint32_t) msish * 100);
+    delayArb((uint32_t) msish * 120);
 }
 
 void delayArb(uint32_t c) {

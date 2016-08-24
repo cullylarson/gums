@@ -2,7 +2,7 @@
 #include "buttons.h"
 #include "arb.h"
 
-#define DEBOUNCE_WAIT 10
+#define DEBOUNCE_WAIT 6
 
 uint8_t retWhicheverPressed(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5, uint8_t b6, uint8_t b7, uint8_t b8, uint8_t b9);
 uint8_t getButtonDown();

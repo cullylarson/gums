@@ -29,11 +29,15 @@ void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered)
 void showWin();
 uint8_t computeNumCorrect();
 uint8_t computeNumOrdered();
-uint8_t intToUnary(uint8_t num);
+uint16_t intToUnary(uint8_t num);
 uint8_t randOneToNine();
+void previewGuessable();
 
 int main(void) {
     setup();
+
+    // start with leds empty
+    srPutBytes(0);
 
     uint8_t b;
 
@@ -107,8 +111,8 @@ void showResults() {
     if(_hasWon) showWin();
     // if we haven't gotten enough button pushes, then just show the number of button pushes
     else if(_numButtonsPressed < 4) displayStatus(_numButtonsPressed, 0, 0);
-    // otherwise, show everything
-    else displayStatus(_numButtonsPressed, _numCorrect, _numOrdered);
+    // otherwise, show the num correct and ordered (don't show num pressed, since it's redundant and confusing)
+    else displayStatus(0, _numCorrect, _numOrdered);
 }
 
 void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered) {
@@ -120,23 +124,35 @@ void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered)
         // show these on the right-most four leds
         | (intToUnary(numButtons) << 4)
         // show on the middle four leds
-        | (intToUnary(numCorrect) << 8)
+        | (intToUnary(numOrdered) << 8)
         // show on the left-most four leds
-        | (intToUnary(numOrdered) << 12);
+        | (intToUnary(numCorrect) << 12);
 
     srPutBytes(toDisplay);
 }
 
-// will take a number like 3, and convert it to a unary number (e.g. 0b00000111).
-// assumes number will be between 0 and 4
-uint8_t intToUnary(uint8_t num) {
+// will take a number like 3, and convert it to a unary number (e.g. 0b0000000000000111).
+// assumes number will be between 0 and 16
+uint16_t intToUnary(uint8_t num) {
     switch(num) {
-        case 4: return 0b00001111;
-        case 3: return 0b00000111;
-        case 2: return 0b00000011;
-        case 1: return 0b00000001;
+        case 16: return 0b1111111111111111;
+        case 15: return 0b0111111111111111;
+        case 14: return 0b0011111111111111;
+        case 13: return 0b0001111111111111;
+        case 12: return 0b0000111111111111;
+        case 11: return 0b0000011111111111;
+        case 10: return 0b0000001111111111;
+        case 9:  return 0b0000000111111111;
+        case 8:  return 0b0000000011111111;
+        case 7:  return 0b0000000001111111;
+        case 6:  return 0b0000000000111111;
+        case 5:  return 0b0000000000011111;
+        case 4:  return 0b0000000000001111;
+        case 3:  return 0b0000000000000111;
+        case 2:  return 0b0000000000000011;
+        case 1:  return 0b0000000000000001;
         case 0:
-        default: return 0b00000000;
+        default: return 0b0000000000000000;
     }
 }
 
@@ -196,6 +212,20 @@ void generateNewGuessable() {
     _numToGuess[1] = randOneToNine();
     _numToGuess[2] = randOneToNine();
     _numToGuess[3] = randOneToNine();
+
+    previewGuessable();//stub
+}
+
+void previewGuessable() {
+    srPutBytes(intToUnary(_numToGuess[0]) << 4);
+    delayMsish(1500);
+    srPutBytes(intToUnary(_numToGuess[1]) << 4);
+    delayMsish(1500);
+    srPutBytes(intToUnary(_numToGuess[2]) << 4);
+    delayMsish(1500);
+    srPutBytes(intToUnary(_numToGuess[3]) << 4);
+    delayMsish(1500);
+    srPutBytes(0);
 }
 
 uint8_t randOneToNine() {
