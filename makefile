@@ -3,6 +3,8 @@ DUDE_DEVICE = m328p
 CLOCK       = 8000000            # 8Mhz (this actually doesn't seem to make any difference)
 PROGRAMMER  = -c usbtiny -P usb  # For using Sparkfun Pocket AVR Programmer
 FUSES      = -U lfuse:w:0xe2:m -U hfuse:w:0xde:m -U efuse:w:0xff:m # CKDIV8 is off
+DEPS        = $(wildcard src/*.h)
+OBJS        = build/main.o build/arb.o build/pins.o build/buttons.o
 
 AVRDUDE = avrdude $(PROGRAMMER) -p $(DUDE_DEVICE) -e
 COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(GCC_DEVICE)
@@ -15,14 +17,14 @@ setup:
 clean:
 	rm build/*
 
-build/%.o : src/%.c
+build/%.o : src/%.c $(DEPS)
 	$(COMPILE) -c $< -o $@
 
 build/%.o : src/%.S
 	$(COMPILE) -x assembler-with-cpp -c $< -o $@
 
-main.elf: build/main.o
-	$(COMPILE) -o build/main.elf build/main.o
+main.elf: $(OBJS)
+	$(COMPILE) -o build/main.elf $(OBJS)
 
 main.hex: setup main.elf
 	avr-objcopy -j .text -j .data -O ihex build/main.elf build/main.hex
