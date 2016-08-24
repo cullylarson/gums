@@ -30,7 +30,7 @@ void showWin();
 uint8_t computeNumCorrect();
 uint8_t computeNumOrdered();
 uint8_t intToUnary(uint8_t num);
-uint8_t randZeroToNine();
+uint8_t randOneToNine();
 
 int main(void) {
     setup();
@@ -192,13 +192,13 @@ uint8_t computeNumOrdered() {
 void generateNewGuessable() {
     srand(arbc());
 
-    _numToGuess[0] = randZeroToNine();
-    _numToGuess[1] = randZeroToNine();
-    _numToGuess[2] = randZeroToNine();
-    _numToGuess[3] = randZeroToNine();
+    _numToGuess[0] = randOneToNine();
+    _numToGuess[1] = randOneToNine();
+    _numToGuess[2] = randOneToNine();
+    _numToGuess[3] = randOneToNine();
 }
 
-uint8_t randZeroToNine() {
+uint8_t randOneToNine() {
     // % 9 gives a number between 0-8. +1 gives a numbet between 1-9.
     return (rand() % 9) + 1;
 }
