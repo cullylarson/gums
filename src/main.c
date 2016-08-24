@@ -199,6 +199,6 @@ void generateNewGuessable() {
 }
 
 uint8_t randOneToNine() {
-    // % 9 gives a number between 0-8. +1 gives a numbet between 1-9.
+    // %9 gives a number between 0-8. +1 gives a numbet between 1-9.
     return (rand() % 9) + 1;
 }
