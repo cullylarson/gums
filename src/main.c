@@ -25,7 +25,7 @@ void generateNewGuessable();
 void onButton(uint8_t button);
 void generateResults();
 void showResults();
-void displayResults(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered);
+void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered);
 void showWin();
 uint8_t computeNumCorrect();
 uint8_t computeNumOrdered();
@@ -106,12 +106,12 @@ void showResults() {
     // the player won
     if(_hasWon) showWin();
     // if we haven't gotten enough button pushes, then just show the number of button pushes
-    else if(_numButtonsPressed < 4) displayResults(_numButtonsPressed, 0, 0);
+    else if(_numButtonsPressed < 4) displayStatus(_numButtonsPressed, 0, 0);
     // otherwise, show everything
-    else displayResults(_numButtonsPressed, _numCorrect, _numOrdered);
+    else displayStatus(_numButtonsPressed, _numCorrect, _numOrdered);
 }
 
-void displayResults(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered) {
+void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered) {
     // NOTES:
     // o srPutBytes will load the least significant bit first.
     // o the first four bits don't have any leds connected.
