@@ -14,6 +14,8 @@ I'm using the internal pull-up resistors for the buttons, so I didn't need exter
 
 I implemented a simple debounce on the buttons.
 
+I was to mount the number buttons in a 3x3 matrix, so I didn't include a zero button and zero doesn't show up in the 4-digit number to guess.
+
 ## Ingredients
 
 * [ATMega328P](https://www.sparkfun.com/products/9061)

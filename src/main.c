@@ -204,7 +204,7 @@ uint8_t computeNumOrdered() {
     return numOrdered;
 }
 
-// returns a four digit number without any zeroes in it
+// generates a new four digit number to guess (without any zeroes in it)
 void generateNewGuessable() {
     srand(arbc());
 
