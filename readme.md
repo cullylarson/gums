@@ -55,6 +55,7 @@ This is the prototype on a breadboard.  There's some electical tape covering the
 * [SN74HC595 Datasheet](http://www.ti.com/lit/ds/symlink/sn74hc595.pdf)
 * [ATMega328 Datasheet](http://www.sparkfun.com/datasheets/Components/SMD/ATMega328.pdf)
 * [Debounce Guide](assets/debounce-guide.pdf)
+* [Video on Debouncing](https://www.youtube.com/watch?v=RzVc3o0iedM)
 
 ### Pin Layouts
 
