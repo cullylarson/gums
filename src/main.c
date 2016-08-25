@@ -2,36 +2,12 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "pins.h"
-#include "arb.h"
-#include "buttons.h"
 #include "shift.h"
+#include "buttons.h"
 #include "arb.h"
-
-#define ALL_ONES    0b1111111111111111
-#define ALL_ZEROES  0
-
-uint8_t _hasDoneAnything = 0;
-uint8_t _hasWon;
-uint16_t _numToGuess[4];
-uint16_t _numButtonsPressed;
-uint8_t _theButtonsPressed[4];
-uint8_t _numCorrect;
-uint8_t _numOrdered;
+#include "game.h"
 
 void setup();
-void startOver();
-void startNewTurn();
-void generateNewGuessable();
-void onButton(uint8_t button);
-void generateResults();
-void showResults();
-void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered);
-void showWin();
-uint8_t computeNumCorrect();
-uint8_t computeNumOrdered();
-uint16_t intToUnary(uint8_t num);
-uint8_t randOneToNine();
-void previewGuessable();
 
 int main(void) {
     setup();
@@ -40,6 +16,18 @@ int main(void) {
     srPutBytes(0);
 
     uint8_t b;
+    uint8_t haveSelectedNumGuessableDigits = 0;
+
+    // get the number of selectable digits
+    while(!haveSelectedNumGuessableDigits) {
+        b = getPressedButton();
+
+        // only allow 3 to 5 digits
+        if(b >= 3 && b <= 5) {
+            haveSelectedNumGuessableDigits = 1;
+            onSelectNumGuessableDigits(b);
+        }
+    }
 
     while(1) {
         b = getPressedButton();
@@ -54,181 +42,4 @@ void setup() {
     setupPins();
 
     sei();
-}
-
-void startOver() {
-    generateNewGuessable();
-    startNewTurn();
-}
-
-void startNewTurn() {
-    _hasWon = 0;
-    _numButtonsPressed = 0;
-    _numCorrect = 0;
-    _numOrdered = 0;
-
-    // no need to zero out _theButtonsPressed, since each press will overwrite the old one
-    // and results aren't displayed until all values are set again.
-}
-
-void onButton(uint8_t button) {
-    // if this is the first action, then start a new game
-    if(!_hasDoneAnything) {
-        _hasDoneAnything = 1;
-        startOver();
-    }
-
-    // check to see if we need to start a new game (i.e. the player won on the last play)
-    if(_hasWon) startOver();
-
-    // the last button pressed got us up to four
-    if(_numButtonsPressed == 4) startNewTurn();
-
-    // register the new button press
-
-    _numButtonsPressed++;
-    _theButtonsPressed[_numButtonsPressed-1] = button;
-
-    // now generate and show the results
-
-    generateResults();
-    showResults();
-}
-
-void generateResults() {
-    // only generate results when four numbers have been pressed
-    if(_numButtonsPressed < 4) return;
-
-    _numCorrect = computeNumCorrect();
-    _numOrdered = computeNumOrdered();
-
-    // if the player won
-    if(_numOrdered == 4) _hasWon = 1;
-}
-
-void showResults() {
-    // the player won
-    if(_hasWon) showWin();
-    // if we haven't gotten enough button pushes, then just show the number of button pushes
-    else if(_numButtonsPressed < 4) displayStatus(_numButtonsPressed, 0, 0);
-    // otherwise, show the num correct and ordered (don't show num pressed, since it's redundant and confusing)
-    else displayStatus(0, _numCorrect, _numOrdered);
-}
-
-void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered) {
-    // NOTES:
-    // o srPutBytes will load the least significant bit first.
-    // o the first four bits don't have any leds connected.
-
-    uint16_t toDisplay = 0
-        // show these on the right-most four leds
-        | (intToUnary(numButtons) << 4)
-        // show on the middle four leds
-        | (intToUnary(numOrdered) << 8)
-        // show on the left-most four leds
-        | (intToUnary(numCorrect) << 12);
-
-    srPutBytes(toDisplay);
-}
-
-// will take a number like 3, and convert it to a unary number (e.g. 0b0000000000000111).
-// assumes number will be between 0 and 16
-uint16_t intToUnary(uint8_t num) {
-    switch(num) {
-        case 16: return 0b1111111111111111;
-        case 15: return 0b0111111111111111;
-        case 14: return 0b0011111111111111;
-        case 13: return 0b0001111111111111;
-        case 12: return 0b0000111111111111;
-        case 11: return 0b0000011111111111;
-        case 10: return 0b0000001111111111;
-        case 9:  return 0b0000000111111111;
-        case 8:  return 0b0000000011111111;
-        case 7:  return 0b0000000001111111;
-        case 6:  return 0b0000000000111111;
-        case 5:  return 0b0000000000011111;
-        case 4:  return 0b0000000000001111;
-        case 3:  return 0b0000000000000111;
-        case 2:  return 0b0000000000000011;
-        case 1:  return 0b0000000000000001;
-        case 0:
-        default: return 0b0000000000000000;
-    }
-}
-
-void showWin() {
-    uint8_t i;
-
-    for(i=0; i < 10; i++) {
-        srPutBytes(ALL_ONES);
-        delayMsish(200);
-        srPutBytes(ALL_ZEROES);
-        delayMsish(200);
-    }
-}
-
-uint8_t computeNumCorrect() {
-    uint8_t i;
-    uint8_t j;
-    uint8_t numCorrect = 0;
-
-    // copy the buttons pressed, so we can change it as we find numbers
-    uint8_t buttonsPressed[4];
-    for(i=0; i < 4; i++) buttonsPressed[i] = _theButtonsPressed[i];
-
-    // go through the number to guess, see how many are correct
-    for(i=0; i < 4; i++) {
-        for(j=0; j < 4; j++) {
-            // we found a match
-            if(_numToGuess[i] == buttonsPressed[j]) {
-                numCorrect++;
-                // unset the value we found, so it isn't matched again
-                buttonsPressed[j] = 0;
-                // now end this loop, so that this value in the number to guess doesn't match another value in our buttonsPressed
-                break;
-            }
-        }
-    }
-
-    return numCorrect;
-}
-
-uint8_t computeNumOrdered() {
-    uint8_t i;
-    uint8_t numOrdered = 0;
-
-    for(i = 0; i < 4; i++) {
-        if(_numToGuess[i] == _theButtonsPressed[i]) numOrdered++;
-    }
-
-    return numOrdered;
-}
-
-// generates a new four digit number to guess (without any zeroes in it)
-void generateNewGuessable() {
-    srand(arbc());
-
-    _numToGuess[0] = randOneToNine();
-    _numToGuess[1] = randOneToNine();
-    _numToGuess[2] = randOneToNine();
-    _numToGuess[3] = randOneToNine();
-
-    previewGuessable();//stub
-}
-
-void previewGuessable() {
-    srPutBytes(intToUnary(_numToGuess[0]) << 4);
-    delayMsish(1500);
-    srPutBytes(intToUnary(_numToGuess[1]) << 4);
-    delayMsish(1500);
-    srPutBytes(intToUnary(_numToGuess[2]) << 4);
-    delayMsish(1500);
-    srPutBytes(intToUnary(_numToGuess[3]) << 4);
-    delayMsish(1500);
-    srPutBytes(0);
-}
-
-uint8_t randOneToNine() {
-    // %9 gives a number between 0-8. +1 gives a numbet between 1-9.
-    return (rand() % 9) + 1;
 }

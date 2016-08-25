@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The point of the game is to guess a 4-digit number.  The game will randomly generate the number, and you use the numbered buttons to guess it.  As you press number buttons, some LEDs will light up telling you how many numbers you've entered.  Once you enter four, a set of LEDs will tell you how many of the numbers are correct and another set of LEDs will tell you how many are ordered correctly.  Once you get the order right, all the LEDs will flash (you won).
+The point of the game is to guess a 3 to 5-digit number.  The fist thing you do is press the 3, 4, or 5 button to select how many digits you want to guess.  The game will then randomly generate the number, and you use the numbered buttons to guess it.  As you press number buttons, some LEDs will light up telling you how many numbers you've entered.  Once you enter 3, 4, or 5 digits (depending on the size of the guessable selected), a set of LEDs will tell you how many of the numbers are correct and another set of LEDs will tell you how many are ordered correctly.  Once you get the order right, all the LEDs will flash (you won).
 
 ### Notes
 
@@ -14,7 +14,7 @@ I'm using the internal pull-up resistors for the buttons, so I didn't need exter
 
 I implemented a simple debounce on the buttons.
 
-I was to mount the number buttons in a 3x3 matrix, so I didn't include a zero button and zero doesn't show up in the 4-digit number to guess.
+I was to mount the number buttons in a 3x3 matrix, so I didn't include a zero button and zero doesn't show up in the number to guess.
 
 ## Ingredients
 
