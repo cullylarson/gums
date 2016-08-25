@@ -1,6 +1,6 @@
 # Gums
 
-> A number guessing game.
+> A number guessing game running on an ATMega328P.
 
 ## Introduction
 
