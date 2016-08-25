@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The point of the game is to guess a 4-digit number.  The game will randomly generate the number, and you use the numbered buttons to guess it.  As you hit numbers, some LEDs will light up telling you how many numbers you've entered.  Once you enter four, a set of LEDs will tell you how many of the numbers are correct and another set of LEDs will tell you how many are ordered correctly.  Once you get the order right, all the LEDs will flash.
+The point of the game is to guess a 4-digit number.  The game will randomly generate the number, and you use the numbered buttons to guess it.  As you press number buttons, some LEDs will light up telling you how many numbers you've entered.  Once you enter four, a set of LEDs will tell you how many of the numbers are correct and another set of LEDs will tell you how many are ordered correctly.  Once you get the order right, all the LEDs will flash (you won).
 
 ### Notes
 
