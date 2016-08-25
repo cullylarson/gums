@@ -56,6 +56,7 @@ This is the prototype on a breadboard.  There's some electical tape covering the
 * [ATMega328 Datasheet](http://www.sparkfun.com/datasheets/Components/SMD/ATMega328.pdf)
 * [Debounce Guide](assets/debounce-guide.pdf)
 * [Video on Debouncing](https://www.youtube.com/watch?v=RzVc3o0iedM)
+* [Arduino C Code on Github](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/cores/arduino)
 
 ### Pin Layouts
 
