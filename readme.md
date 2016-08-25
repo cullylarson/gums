@@ -38,7 +38,7 @@ _NOTE: The makefile uses `avr-gcc` and `avrdude` to compile and upload. It also 
 
 ![Schematic](assets/gums-schematic.png)
 
-__I created the schematic using [Eagle](https://cadsoft.io/).__
+_I created the schematic using [Eagle](https://cadsoft.io/)._
 
 ## Photos
 
