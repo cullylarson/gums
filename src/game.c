@@ -11,8 +11,8 @@
 uint8_t _numGuessableDigits;
 uint8_t _hasDoneAnything = 0;
 uint8_t _hasWon;
-uint16_t _numToGuess[MAX_GUESSABLE_DIGITS];
-uint16_t _numButtonsPressed;
+uint8_t _numToGuess[MAX_GUESSABLE_DIGITS];
+uint8_t _numButtonsPressed;
 uint8_t _theButtonsPressed[MAX_GUESSABLE_DIGITS];
 uint8_t _numCorrect;
 uint8_t _numOrdered;
@@ -23,7 +23,7 @@ void generateNewGuessable();
 void generateResults();
 void showResults();
 void showNumDigitsInGuessable();
-void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered);
+void displayStatus(uint8_t numButtons, uint8_t numCorrect, uint8_t numOrdered);
 void showWin();
 uint8_t computeNumCorrect();
 uint8_t computeNumOrdered();
@@ -104,7 +104,7 @@ void showResults() {
     else displayStatus(0, _numCorrect, _numOrdered);
 }
 
-void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered) {
+void displayStatus(uint8_t numButtons, uint8_t numCorrect, uint8_t numOrdered) {
     uint16_t toDisplay = 0
         // show these on the right-most five leds
         | (intToUnary(numButtons))
@@ -152,16 +152,35 @@ void showWin() {
     }
 }
 
-// TODO: do an led dance
 void onGameStartup() {
+    uint8_t steps[] = {
+        0b00000100,
+        0b00001010,
+        0b00010001,
+        0b00001010,
+        0b00000100,
+        0b00001110,
+        0b00011111,
+        0b00000000,
+        0b00011111,
+        0b00000000,
+        0b00011111,
+        0b00000000,
+        0b00011111,
+        0b00001110,
+        0b00001110,
+        0b00000100,
+    };
+
+    uint8_t l = sizeof(steps)/sizeof(uint8_t);
     uint8_t i;
 
-    for(i=0; i < 3; i++) {
-        outputToLeds(ALL_ONES);
-        delayMsish(200);
-        outputToLeds(ALL_ZEROES);
+    for(i=0; i < l; i++) {
+        displayStatus(steps[i], steps[i], steps[i]);
         delayMsish(200);
     }
+
+    outputToLeds(ALL_ZEROES);
 }
 
 void showNumDigitsInGuessable() {
