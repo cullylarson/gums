@@ -42,6 +42,12 @@ _NOTE: The makefile uses `avr-gcc` and `avrdude` to compile and upload. It also 
 
 _I created the schematic using [Eagle](https://cadsoft.io/)._
 
+## Layout
+
+This is how I imagine laying the game out.  The buttons and body will be made out of wood. The "spaces" between will be acrylic, with the LEDs mounted behind.
+
+![Gums Console Layout](assets/gums-layout-game.png)
+
 ## Photos
 
 This is the prototype on a breadboard.  There's some electical tape covering the LED connections, but you should be able to discern them from the schematic.
