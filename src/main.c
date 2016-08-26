@@ -15,6 +15,8 @@ int main(void) {
     // start with leds empty
     srPutBytes(0);
 
+    onGameStartup();
+
     uint8_t b;
     uint8_t haveSelectedNumGuessableDigits = 0;
 

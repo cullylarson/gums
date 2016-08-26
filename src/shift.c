@@ -1,6 +1,10 @@
 #include "pins.h"
 #include "shift.h"
 
+void srPutBit(uint8_t bit);
+void srLatch();
+void srCycleClock();
+
 /*
  * Writes two bytes out serially to SR_SER
  */

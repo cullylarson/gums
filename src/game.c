@@ -22,7 +22,7 @@ void startNewTurn();
 void generateNewGuessable();
 void generateResults();
 void showResults();
-void showGameStarted();
+void showNumDigitsInGuessable();
 void displayStatus(uint8_t numButtons, uint16_t numCorrect, uint16_t numOrdered);
 void showWin();
 uint8_t computeNumCorrect();
@@ -49,7 +49,7 @@ void startNewTurn() {
 
 void onSelectNumGuessableDigits(uint8_t numGuessableDigits) {
     _numGuessableDigits = numGuessableDigits;
-    showGameStarted();
+    showNumDigitsInGuessable();
 }
 
 void onButton(uint8_t button) {
@@ -152,7 +152,19 @@ void showWin() {
     }
 }
 
-void showGameStarted() {
+// TODO: do an led dance
+void onGameStartup() {
+    uint8_t i;
+
+    for(i=0; i < 3; i++) {
+        outputToLeds(ALL_ONES);
+        delayMsish(200);
+        outputToLeds(ALL_ZEROES);
+        delayMsish(200);
+    }
+}
+
+void showNumDigitsInGuessable() {
     uint8_t i;
 
     for(i=0; i < 5; i++) {
