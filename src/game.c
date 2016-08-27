@@ -24,6 +24,7 @@ void generateResults();
 void showResults();
 void showNumDigitsInGuessable();
 void displayStatus(uint8_t numButtons, uint8_t numCorrect, uint8_t numOrdered);
+void displayBitStatus(uint8_t numButtons, uint8_t numCorrect, uint8_t numOrdered);
 void showWin();
 uint8_t computeNumCorrect();
 uint8_t computeNumOrdered();
@@ -167,20 +168,30 @@ void onGameStartup() {
         0b00011111,
         0b00000000,
         0b00011111,
-        0b00001110,
-        0b00001110,
-        0b00000100,
     };
 
     uint8_t l = sizeof(steps)/sizeof(uint8_t);
     uint8_t i;
 
     for(i=0; i < l; i++) {
-        displayStatus(steps[i], steps[i], steps[i]);
+        displayBitStatus(steps[i], steps[i], steps[i]);
         delayMsish(200);
     }
 
     outputToLeds(ALL_ZEROES);
+}
+
+// like displayStatus, but doesn't convert values to unary (preserves the bit structure)
+void displayBitStatus(uint8_t numButtons, uint8_t numCorrect, uint8_t numOrdered) {
+    uint16_t toDisplay = 0
+        // show these on the right-most five leds
+        | (numButtons)
+        // show on the middle five leds
+        | (numOrdered << 5)
+        // show on the left-most five leds
+        | (numCorrect << 10);
+
+    outputToLeds(toDisplay);
 }
 
 void showNumDigitsInGuessable() {
@@ -236,7 +247,7 @@ void generateNewGuessable() {
     srand(arbc());
 
     uint8_t i;
-    
+
     for(i=0; i < _numGuessableDigits; i++) _numToGuess[i] = randOneToNine();
 
     previewGuessable();//stub
